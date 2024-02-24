@@ -1,7 +1,7 @@
 //today's date and time
 var currentDay = dayjs().format("dddd DD MMM YYYY");
 $("#3a").text(currentDay);
-window.onload = mTable()
+window.onload = mTable;
 //Make table template
 function mTable() {
       $(document).ready(function() {
@@ -14,7 +14,7 @@ function mTable() {
                                     <td></td>
                                   </tr>`);
     }
-})
+})}
 
 $(document).ready(function() {      
   $('#makeTable').click(function() { 
@@ -28,8 +28,9 @@ $(".task-link").on("click", function() {
     let inputElement = $("<input type='text' class='task-input' />");
     $(this).replaceWith(inputElement);}
  )
-}
 
+
+/*
 function createaTable() {
 for (let hour = 9; hour <= 17; hour++) {
     let time = hour;
@@ -39,7 +40,7 @@ for (let hour = 9; hour <= 17; hour++) {
                                   <td></td>
                                 </tr>`)};
   }
-
+*/
 
 
 function testLog() {
