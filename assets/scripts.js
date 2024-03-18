@@ -1,122 +1,70 @@
-/* //Make table template global (hopefully ;)
-function mTable() {
-    // Clear existing table content
-    $("#schedule-body").empty();
-   
-
-    // Generate rows for each hour from 9 am to 5 pm
-    
-        for (let hour = 9; hour <= 17; hour++) {
-        let time = (hour < 12) ? hour + " AM" : (hour === 12) ? "12 PM" : (hour - 12) + " PM";
-        $("#schedule-body").append(`<tr>
-                                        <td>${time}</td>
-                                        <td><a class="task-link" href="#">Click to Add Task</a></td>
-                                        <td></td>
-                                    </tr>`);
-    }
+// Function to extract tasks from the table
+function getTasksFromTable() {
+  let tasks = [];
+  $("#schedule-body").find(".task-input").each(function() {
+      tasks.push($(this).val());
+  });
+  return tasks;
 }
 
+// Function to generate table
+function mTable() {
+  // Clear existing table content
+  $("#schedule-body").empty();
 
+    // Get current time
+    const currentHour = new Date().getHours();
+
+
+  // Generate rows for each hour from 9 am to 5 pm
+  for (let hour = 9; hour <= 17; hour++) {
+      let time = (hour < 12) ? hour + " AM" : (hour === 12) ? "12 PM" : (hour - 12) + " PM";
+
+        // Set background color based on current time
+        let backgroundColor;
+        if (hour < currentHour) {
+            backgroundColor = "gray";
+        } else if (hour === currentHour) {
+            backgroundColor = "red";
+        } else {
+            backgroundColor = "green";
+        }
+
+        $("#schedule-body").append(`<tr style="background-color: ${backgroundColor};">
+                                        <td>${time}</td>
+                                        <td><input type="text" class="task-input" placeholder="Enter task"></td>
+                                        <td><input type="checkbox" class="completion-checkbox"></td>
+                                    </tr>`);
+                                    }
+}
 $(document).ready(function() {
-    //adding local storage
-
-  //today's date and time
-  var currentDay = dayjs().format("dddd DD MMM YYYY");
-  $("#3a").text(currentDay);
+  // Attempt to restore task data from local storage
+  try {
+      const storedTasks = localStorage.getItem('taskData');
+      if (storedTasks) {
+          const tasks = JSON.parse(storedTasks);
+          tasks.forEach(function(taskText, index) {
+              $(`#schedule-body .task-input:eq(${index})`).val(taskText);
+          });
+      }
+  } catch (error) {
+      console.error('Error restoring task data:', error);
+      // Handle the error appropriately, e.g., clear invalid data
+      localStorage.removeItem('taskData');
+  }
 
   // Generate table when the page loads
   mTable();
 
   // Regenerate table when "Make Table" button is clicked
   $('#makeTable').click(mTable);
-// restore event state from local storage
-var eventState = localStorage.getItem('eventState')
-if (eventState) {
-    $("#schedule-body").html(eventState)
-}
 
+  // Handle blur event for task input
+  $(document).on("blur", ".task-input", function() {
+      // Get all existing tasks
+      let existingTasks = getTasksFromTable();
 
-  //onclicking the task link add the text to the cell
-  $(document).on("click", ".task-link", function() {
-      // Replace the link with a text input for task entry
-      let inputElement = $("<input type='text' class='task-input' />");
-      $(this).replaceWith(inputElement);
-      console.log("this is a test of the text box")
-    // addto local storag
-    localStorage.setItem('eventState', $("#schedule-body").html())
+      // Store updated tasks in local storage
+      localStorage.setItem('taskData', JSON.stringify(existingTasks));
   });
-})
-function testLog() {
-    console.log("This is a test")
-}
-*/
-// Make table template global
-function mTable() {
-    // Clear existing table content
-    $("#schedule-body").empty();
-    
-    // Generate rows for each hour from 9 am to 5 pm
-    for (let hour = 9; hour <= 17; hour++) {
-        let time = (hour < 12) ? hour + " AM" : (hour === 12) ? "12 PM" : (hour - 12) + " PM";
-        $("#schedule-body").append(`<tr>
-                                        <td>${time}</td>
-                                        <td><a class="task-link" href="#">Click to Add Task</a></td>
-                                        <td></td>
-                                    </tr>`);
-    }
-}
-
-$(document).ready(function() {
-    // Display today's date and time
-    var currentDay = dayjs().format("dddd DD MMM YYYY");
-    $("#3a").text(currentDay);
-
-    // Generate table when the page loads or refreshes
-    mTable();
-
-    // Regenerate table when "Make Table" button is clicked
-    $('#makeTable').click(mTable);
-
-    // Restore event state from local storage
-    var eventState = localStorage.getItem('eventState');
-    if (eventState) {
-        $("#schedule-body").html(eventState);
-
-        // Reattach event handlers after regenerating the table
-        attachEventHandlers();
-    }
-
-    // Handle task link click
-    $(document).on("click", ".task-link", function() {
-        // Replace the link with a text input for task entry
-        let inputElement = $("<input type='text' class='task-input' />");
-        $(this).replaceWith(inputElement);
-        console.log("Task input created");
-
-        // Store updated event state in local storage
-        localStorage.setItem('eventState', $("#schedule-body").html());
-
-        // Reattach event handlers after modifying the table content
-        attachEventHandlers();
-    });
 });
-
-// Function to attach event handlers to task links
-function attachEventHandlers() {
-    $(".task-link").off().on("click", function() {
-        // Replace the link with a text input for task entry
-        let inputElement = $("<input type='text' class='task-input' />");
-        $(this).replaceWith(inputElement);
-        console.log("Task input created");
-
-        // Store updated event state in local storage
-        localStorage.setItem('eventState', $("#schedule-body").html());
-
-        // Reattach event handlers after modifying the table content
-        attachEventHandlers();
-    });
-}
-
-function testLog() {
-    console.log("This is a test");
-}
