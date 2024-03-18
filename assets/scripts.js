@@ -14,6 +14,8 @@ function mTable() {
     }
 }
 $(document).ready(function() {
+    //adding local storage
+
   //today's date and time
   var currentDay = dayjs().format("dddd DD MMM YYYY");
   $("#3a").text(currentDay);
@@ -30,6 +32,8 @@ $(document).ready(function() {
       let inputElement = $("<input type='text' class='task-input' />");
       $(this).replaceWith(inputElement);
       console.log("this is a test of the text box")
+    // addto local storage
+    localStorage.setItem('eventState', $("#schedule-body").html()))
   });
 });
 
