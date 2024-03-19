@@ -34,12 +34,13 @@ function mTable() {
                                         <td>${time}</td>
                                         <td><input type="text" class="task-input" placeholder="Enter task"></td>
                                         <td><input type="checkbox" class="completion-checkbox"></td>
+                                        <td><button class="btn btn-primary save-btn">Save Task</button></td>
                                     </tr>`);
                                     }
 }
 $(document).ready(function() {
   // Attempt to restore task data from local storage
-  try {
+/*  try {
       const storedTasks = localStorage.getItem('taskData');
       if (storedTasks) {
           const tasks = JSON.parse(storedTasks);
@@ -52,13 +53,23 @@ $(document).ready(function() {
       // Handle the error appropriately, e.g., clear invalid data
       localStorage.removeItem('taskData');
   }
-
+*/
   // Generate table when the page loads
   mTable();
 
   // Regenerate table when "Make Table" button is clicked
   $('#makeTable').click(mTable);
 
+    // Event for the "Save Task" button click
+    $(document).on("click", ".save-btn", function() {
+      // Get the task text from the corresponding input field in the same row
+      let taskText = $(this).closest("tr").find(".task-input").val();
+
+       // Store the task text in local storage
+       localStorage.setItem('taskData', taskText);
+
+      alert("Saved!")
+/*
   // Handle blur event for task input
   $(document).on("blur", ".task-input", function() {
       // Get all existing tasks
@@ -66,5 +77,6 @@ $(document).ready(function() {
 
       // Store updated tasks in local storage
       localStorage.setItem('taskData', JSON.stringify(existingTasks));
+      */
   });
 });
